@@ -55,4 +55,14 @@ contract MattTest is Test {
         assertEq(matt.ownerOf(1), buyers[0]);
         assertEq(matt.ownerOf(2), buyers[1]);
     }
+
+    function testFail_InsufficientAllowanceRevertsMint() public {
+        // Reduce the allowance for the first buyer to less than the price
+        vm.prank(buyers[0]);
+        require(auctionCurrency.approve(address(matt), price - 1), "Approval failed");
+
+        // Attempting to mint should now fail
+        matt.mint(price, buyers);
+    }
+
 }
